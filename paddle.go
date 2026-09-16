@@ -7,6 +7,10 @@ type Paddle struct {
 	Speed  float64
 }
 
+func (p *Paddle) overlaps(y int) bool {
+	return y >= p.position.Y && y <= p.position.Y+p.Height-1
+}
+
 // Items returns one drawable Item per row of the paddle's height.
 func (p *Paddle) Items() []Item {
 	items := make([]Item, p.Height)

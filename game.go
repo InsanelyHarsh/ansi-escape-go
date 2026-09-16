@@ -110,10 +110,6 @@ func (g *Game) process(input int) {
 		g.movePaddle(&g.rightPaddle, int(g.rightPaddle.Speed))
 	}
 
-	//TODO: paddle collision handling
-	//upon collision
-	//velocity is changed
-
 	g.moveBall()
 }
 
@@ -132,18 +128,25 @@ func (g *Game) movePaddle(p *Paddle, dy int) {
 func (g *Game) moveBall() {
 	next := g.ball.GetNextPosition()
 
-	//TODO: check paddle positions
-	//if overlap -> increase score else increase other player score and reset
-
 	if !g.Contains(Vector{X: next.X, Y: g.ball.position.Y}) {
+		var paddle *Paddle
+		var defenderScore, attackerScore *int
+
 		if next.X <= 0 {
-			g.RightScore++
+			paddle, defenderScore, attackerScore = &g.leftPaddle, &g.LeftScore, &g.RightScore
 		} else {
-			g.LeftScore++
+			paddle, defenderScore, attackerScore = &g.rightPaddle, &g.RightScore, &g.LeftScore
 		}
 
-		g.resetBall()
-		return
+		if !paddle.overlaps(g.ball.position.Y) {
+			*attackerScore++
+			g.resetBall()
+			return
+		}
+
+		*defenderScore++
+		g.ball.velocity.X = -g.ball.velocity.X
+		next.X = g.ball.position.X + g.ball.velocity.X
 	}
 
 	if !g.Contains(Vector{X: g.ball.position.X, Y: next.Y}) {
