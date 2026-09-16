@@ -7,7 +7,7 @@ import (
 func main() {
 
 	EnterAlternateScreen()
-	defer EnterAlternateScreen()
+	defer ExitAlternateScreen()
 
 	fd := int(os.Stdin.Fd())
 
@@ -17,22 +17,38 @@ func main() {
 	}
 	defer restore(fd, old)
 
-	// fmt.Println("Press keys. ESC exits.")
+	win := Window{origin: &Vector{X: 0, Y: 0}, width: 40, height: 20}
+	r := NewRenderer(win)
+	r.Render()
+
+	pos := Vector{X: 1, Y: 1}
+	r.Put(pos, '@')
 
 	for {
 		key := readKey()
 
+		next := pos
 		switch key {
 		case KeyUp:
-			CursorUp(1)
+			next.Y--
 		case KeyDown:
-			CursorDown(1)
+			next.Y++
 		case KeyRight:
-			CursorRight(1)
+			next.X++
 		case KeyLeft:
-			CursorLeft(1)
+			next.X--
 		case KeyEscape:
 			return
+		default:
+			continue
 		}
+
+		if !r.Contains(next) {
+			continue
+		}
+
+		r.Put(pos, ' ')
+		r.Put(next, '@')
+		pos = next
 	}
 }
