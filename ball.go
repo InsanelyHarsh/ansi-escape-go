@@ -1,8 +1,9 @@
 package main
 
 type Ball struct {
-	position Vector
+	Item
 	velocity Vector
+	Speed    float64
 }
 
 func (b *Ball) GetNextPosition() Vector {

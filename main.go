@@ -23,8 +23,8 @@ func main() {
 	r.Render()
 
 	g := StartGame()
-	for _, p := range g.Positions() {
-		r.Put(p, 'o')
+	for _, it := range g.Items() {
+		r.Put(it.position, it.ch)
 	}
 
 	for g.Running {
@@ -33,15 +33,15 @@ func main() {
 			input = readKey()
 		}
 
-		prev := g.Positions()
+		prev := g.Items()
 		g.process(input)
-		next := g.Positions()
+		next := g.Items()
 
-		for _, p := range prev {
-			r.Put(p, ' ')
+		for _, it := range prev {
+			r.Put(it.position, ' ')
 		}
-		for _, p := range next {
-			r.Put(p, 'o')
+		for _, it := range next {
+			r.Put(it.position, it.ch)
 		}
 	}
 }
