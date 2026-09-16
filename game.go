@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Vector struct {
 	X, Y int
 }
@@ -17,7 +19,13 @@ type Game struct {
 	rightPaddle Paddle
 	items       []*Item
 
+	LeftScore, RightScore int
+
 	Running bool
+}
+
+func (g *Game) ScoreString() string {
+	return fmt.Sprintf("%d : %d", g.LeftScore, g.RightScore)
 }
 
 func StartGame() *Game {
@@ -124,9 +132,18 @@ func (g *Game) movePaddle(p *Paddle, dy int) {
 func (g *Game) moveBall() {
 	next := g.ball.GetNextPosition()
 
+	//TODO: check paddle positions
+	//if overlap -> increase score else increase other player score and reset
+
 	if !g.Contains(Vector{X: next.X, Y: g.ball.position.Y}) {
-		g.ball.velocity.X = -g.ball.velocity.X
-		next.X = g.ball.position.X + g.ball.velocity.X
+		if next.X <= 0 {
+			g.RightScore++
+		} else {
+			g.LeftScore++
+		}
+
+		g.resetBall()
+		return
 	}
 
 	if !g.Contains(Vector{X: g.ball.position.X, Y: next.Y}) {
@@ -135,6 +152,11 @@ func (g *Game) moveBall() {
 	}
 
 	g.ball.position = next
+}
+
+func (g *Game) resetBall() {
+	g.ball.position = Vector{X: g.Width / 2, Y: g.Height / 2}
+	g.ball.velocity = randomVelocity()
 }
 
 func (g *Game) Contains(pos Vector) bool {

@@ -68,6 +68,13 @@ func (r *Renderer) Put(pos Vector, ch rune) {
 	fmt.Printf("%c", ch)
 }
 
+// PutString draws s starting at pos, one character per column.
+func (r *Renderer) PutString(pos Vector, s string) {
+	for i, ch := range s {
+		r.Put(Vector{X: pos.X + i, Y: pos.Y}, ch)
+	}
+}
+
 func (r *Renderer) Move(pos Vector) {
 	CursorHome()
 

@@ -26,10 +26,15 @@ func main() {
 	for _, it := range g.Items() {
 		r.Put(it.position, it.ch)
 	}
+	drawScore(r, g)
+
+	const tickInterval = 150 * time.Millisecond
 
 	for g.Running {
+		tickStart := time.Now()
+
 		input := 0
-		if inputReady(fd, 80*time.Millisecond) {
+		if inputReady(fd, 0) {
 			input = readKey()
 		}
 
@@ -43,5 +48,17 @@ func main() {
 		for _, it := range next {
 			r.Put(it.position, it.ch)
 		}
+		drawScore(r, g)
+
+		if elapsed := time.Since(tickStart); elapsed < tickInterval {
+			time.Sleep(tickInterval - elapsed)
+		}
 	}
+}
+
+// drawScore renders the current score in the top-right corner of the
+// game's window, overwriting that stretch of the border.
+func drawScore(r *Renderer, g *Game) {
+	score := g.ScoreString()
+	r.PutString(Vector{X: g.Width - 2 - len(score), Y: 0}, score)
 }
