@@ -25,20 +25,18 @@ func StartGame() *Game {
 		Running: true,
 		Width:   40,
 		Height:  20,
-		ball: Ball{
-			Item: Item{
-				position: Vector{
-					X: 1,
-					Y: 10,
-				},
-				ch: 'o',
+	}
+
+	g.ball = Ball{
+		Item: Item{
+			position: Vector{
+				X: g.Width / 2,
+				Y: g.Height / 2,
 			},
-			velocity: Vector{
-				X: 1,
-				Y: 0,
-			},
-			Speed: 1,
+			ch: 'o',
 		},
+		velocity: randomVelocity(),
+		Speed:    1,
 	}
 
 	const paddleHeight = 3
