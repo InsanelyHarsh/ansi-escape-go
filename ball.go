@@ -29,3 +29,13 @@ func randomVelocity() Vector {
 
 	return Vector{X: x, Y: y}
 }
+
+func clampSpeed(v int) int {
+	if v > maxBallSpeed {
+		return maxBallSpeed
+	}
+	if v < -maxBallSpeed {
+		return -maxBallSpeed
+	}
+	return v
+}

@@ -146,7 +146,9 @@ func (g *Game) moveBall() {
 
 		*defenderScore++
 		g.ball.velocity.X = -g.ball.velocity.X
+		g.ball.velocity.Y = clampSpeed(paddle.hitOffset(g.ball.position.Y))
 		next.X = g.ball.position.X + g.ball.velocity.X
+		next.Y = g.ball.position.Y + g.ball.velocity.Y
 	}
 
 	if !g.Contains(Vector{X: g.ball.position.X, Y: next.Y}) {

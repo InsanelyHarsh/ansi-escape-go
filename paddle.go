@@ -11,6 +11,10 @@ func (p *Paddle) overlaps(y int) bool {
 	return y >= p.position.Y && y <= p.position.Y+p.Height-1
 }
 
+func (p *Paddle) hitOffset(y int) int {
+	return (y - p.position.Y) - p.Height/2
+}
+
 // Items returns one drawable Item per row of the paddle's height.
 func (p *Paddle) Items() []Item {
 	items := make([]Item, p.Height)
