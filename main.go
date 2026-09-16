@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 )
 
 func main() {
@@ -21,34 +22,26 @@ func main() {
 	r := NewRenderer(win)
 	r.Render()
 
-	pos := Vector{X: 1, Y: 1}
-	r.Put(pos, '@')
+	g := StartGame()
+	for _, p := range g.Positions() {
+		r.Put(p, 'o')
+	}
 
-	for {
-		key := readKey()
-
-		next := pos
-		switch key {
-		case KeyUp:
-			next.Y--
-		case KeyDown:
-			next.Y++
-		case KeyRight:
-			next.X++
-		case KeyLeft:
-			next.X--
-		case KeyEscape:
-			return
-		default:
-			continue
+	for g.Running {
+		input := 0
+		if inputReady(fd, 80*time.Millisecond) {
+			input = readKey()
 		}
 
-		if !r.Contains(next) {
-			continue
-		}
+		prev := g.Positions()
+		g.process(input)
+		next := g.Positions()
 
-		r.Put(pos, ' ')
-		r.Put(next, '@')
-		pos = next
+		for _, p := range prev {
+			r.Put(p, ' ')
+		}
+		for _, p := range next {
+			r.Put(p, 'o')
+		}
 	}
 }
