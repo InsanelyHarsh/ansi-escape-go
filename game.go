@@ -88,9 +88,20 @@ func (g *Game) Items() []Item {
 
 // process advances the game by one step given this frame's input.
 func (g *Game) process(input int) {
-	if input&KeyEscape != 0 {
+	if input == KeyEscape {
 		g.Running = false
 		return
+	}
+
+	switch input {
+	case int('w'), int('W'):
+		g.movePaddle(&g.leftPaddle, -int(g.leftPaddle.Speed))
+	case int('s'), int('S'):
+		g.movePaddle(&g.leftPaddle, int(g.leftPaddle.Speed))
+	case KeyUp:
+		g.movePaddle(&g.rightPaddle, -int(g.rightPaddle.Speed))
+	case KeyDown:
+		g.movePaddle(&g.rightPaddle, int(g.rightPaddle.Speed))
 	}
 
 	//TODO: paddle collision handling
@@ -98,6 +109,18 @@ func (g *Game) process(input int) {
 	//velocity is changed
 
 	g.moveBall()
+}
+
+// movePaddle shifts p vertically by dy, clamping so it stays fully
+// inside the box.
+func (g *Game) movePaddle(p *Paddle, dy int) {
+	next := p.position.Y + dy
+
+	if next < 1 || next+p.Height-1 > g.Height-2 {
+		return
+	}
+
+	p.position.Y = next
 }
 
 func (g *Game) moveBall() {
