@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/insanelyharsh/ansi-escape-go/constants"
+)
 
 type Renderer struct {
 	topLeft     Vector
@@ -24,7 +28,7 @@ func NewRenderer(win Window) *Renderer {
 }
 
 func (r *Renderer) Clear() {
-	fmt.Print(esc + "2J")
+	fmt.Print(constants.Esc + "2J")
 	CursorHome()
 }
 

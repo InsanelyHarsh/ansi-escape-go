@@ -1,8 +1,10 @@
 package main
 
-import "math/rand"
+import (
+	"math/rand"
 
-const maxBallSpeed = 2
+	"github.com/insanelyharsh/ansi-escape-go/constants"
+)
 
 type Ball struct {
 	Item
@@ -17,25 +19,27 @@ func (b *Ball) GetNextPosition() Vector {
 	}
 }
 
-// randomVelocity returns a random velocity capped at maxBallSpeed per
-// axis, with a nonzero X so the ball always drifts toward a paddle.
+// randomVelocity returns a random velocity capped at
+// constants.MaxBallSpeed per axis, with a nonzero X so the ball
+// always drifts toward a paddle.
 func randomVelocity() Vector {
-	x := rand.Intn(maxBallSpeed) + 1
+	x := rand.Intn(constants.MaxBallSpeed) + 1
 	if rand.Intn(2) == 0 {
 		x = -x
 	}
 
-	y := rand.Intn(2*maxBallSpeed+1) - maxBallSpeed
+	y := rand.Intn(2*constants.MaxBallSpeed+1) - constants.MaxBallSpeed
 
 	return Vector{X: x, Y: y}
 }
 
+// clampSpeed keeps v within [-constants.MaxBallSpeed, constants.MaxBallSpeed].
 func clampSpeed(v int) int {
-	if v > maxBallSpeed {
-		return maxBallSpeed
+	if v > constants.MaxBallSpeed {
+		return constants.MaxBallSpeed
 	}
-	if v < -maxBallSpeed {
-		return -maxBallSpeed
+	if v < -constants.MaxBallSpeed {
+		return -constants.MaxBallSpeed
 	}
 	return v
 }

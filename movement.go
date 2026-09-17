@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"os"
 	"time"
-)
 
-const (
-	// esc = "\u001b["
-	esc = "\033["
+	"github.com/insanelyharsh/ansi-escape-go/constants"
 )
 
 const (
@@ -28,60 +25,60 @@ func readKey() int {
 
 	_, err := os.Stdin.Read(buf)
 	if err != nil {
-		return KeyEscape
+		return constants.KeyEscape
 	}
 
 	switch buf[0] {
 	case '\r', '\n':
-		return KeyEnter
+		return constants.KeyEnter
 
 	case ' ':
-		return KeySpace
+		return constants.KeySpace
 
 	case 127:
-		return KeyBackspace
+		return constants.KeyBackspace
 
 	case 27:
 		// ESC received. If no follow-up byte shows up quickly, this is a
 		// standalone Escape key press, not the start of an escape sequence.
 		if !inputReady(int(os.Stdin.Fd()), 25*time.Millisecond) {
-			return KeyEscape
+			return constants.KeyEscape
 		}
 
 		_, err := os.Stdin.Read(buf)
 		if err != nil {
-			return KeyEscape
+			return constants.KeyEscape
 		}
 
 		if buf[0] != '[' {
-			return KeyEscape
+			return constants.KeyEscape
 		}
 
 		_, err = os.Stdin.Read(buf)
 		if err != nil {
-			return KeyEscape
+			return constants.KeyEscape
 		}
 
 		switch buf[0] {
 		case 'A':
-			return KeyUp
+			return constants.KeyUp
 		case 'B':
-			return KeyDown
+			return constants.KeyDown
 		case 'C':
-			return KeyRight
+			return constants.KeyRight
 		case 'D':
-			return KeyLeft
+			return constants.KeyLeft
 		}
 
-		return KeyEscape
+		return constants.KeyEscape
 	case 'h', 'H':
-		return KeyLeft
+		return constants.KeyLeft
 	case 'j', 'J':
-		return KeyDown
+		return constants.KeyDown
 	case 'k', 'K':
-		return KeyUp
+		return constants.KeyUp
 	case 'l', 'L':
-		return KeyRight
+		return constants.KeyRight
 	default:
 		// Printable character.
 		return int(buf[0])
@@ -89,23 +86,23 @@ func readKey() int {
 }
 
 func CursorUp(n int) {
-	fmt.Printf("%s%dA", esc, n)
+	fmt.Printf("%s%dA", constants.Esc, n)
 }
 
 func CursorDown(n int) {
-	fmt.Printf("%s%dB", esc, n)
+	fmt.Printf("%s%dB", constants.Esc, n)
 }
 
 func CursorLeft(n int) {
-	fmt.Printf("%s%dD", esc, n)
+	fmt.Printf("%s%dD", constants.Esc, n)
 }
 
 func CursorRight(n int) {
-	fmt.Printf("%s%dC", esc, n)
+	fmt.Printf("%s%dC", constants.Esc, n)
 }
 
 func Delete(n int) {
-	fmt.Printf("%s%dP", esc, n)
+	fmt.Printf("%s%dP", constants.Esc, n)
 }
 
 func CursorHome() {

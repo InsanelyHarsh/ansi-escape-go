@@ -3,6 +3,9 @@ package main
 import (
 	"os"
 	"time"
+
+	"github.com/insanelyharsh/ansi-escape-go/constants"
+	// "github.com/insanelyharsh/ansi-escape-go/game"
 )
 
 func main() {
@@ -18,7 +21,8 @@ func main() {
 	}
 	defer restore(fd, old)
 
-	win := Window{origin: &Vector{X: 0, Y: 0}, width: 40, height: 20}
+	// win := Window{origin: &game.Vector{X: 0, Y: 0}, width: constants.BoardWidth, height: constants.BoardHeight}
+	win := Window{origin: &Vector{X: 0, Y: 0}, width: constants.BoardWidth, height: constants.BoardHeight}
 	r := NewRenderer(win)
 	r.Render()
 
@@ -27,8 +31,6 @@ func main() {
 		r.Put(it.position, it.ch)
 	}
 	drawScore(r, g)
-
-	const tickInterval = 150 * time.Millisecond
 
 	for g.Running {
 		tickStart := time.Now()
@@ -39,7 +41,7 @@ func main() {
 		}
 
 		prev := g.Items()
-		g.process(input)
+		g.Process(input)
 		next := g.Items()
 
 		for _, it := range prev {
@@ -50,8 +52,8 @@ func main() {
 		}
 		drawScore(r, g)
 
-		if elapsed := time.Since(tickStart); elapsed < tickInterval {
-			time.Sleep(tickInterval - elapsed)
+		if elapsed := time.Since(tickStart); elapsed < constants.TickInterval {
+			time.Sleep(constants.TickInterval - elapsed)
 		}
 	}
 }

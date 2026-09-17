@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/insanelyharsh/ansi-escape-go/constants"
+)
 
 type Vector struct {
 	X, Y int
@@ -31,8 +35,8 @@ func (g *Game) ScoreString() string {
 func StartGame() *Game {
 	g := &Game{
 		Running: true,
-		Width:   40,
-		Height:  20,
+		Width:   constants.BoardWidth,
+		Height:  constants.BoardHeight,
 	}
 
 	g.ball = Ball{
@@ -47,8 +51,7 @@ func StartGame() *Game {
 		Speed:    1,
 	}
 
-	const paddleHeight = 3
-	midY := g.Height/2 - paddleHeight/2
+	midY := g.Height/2 - constants.PaddleHeight/2
 
 	g.leftPaddle = Paddle{
 		Item: Item{
@@ -56,7 +59,7 @@ func StartGame() *Game {
 			ch:       '|',
 		},
 		Width:  1,
-		Height: paddleHeight,
+		Height: constants.PaddleHeight,
 		Speed:  1,
 	}
 
@@ -66,7 +69,7 @@ func StartGame() *Game {
 			ch:       '|',
 		},
 		Width:  1,
-		Height: paddleHeight,
+		Height: constants.PaddleHeight,
 		Speed:  1,
 	}
 
@@ -92,9 +95,9 @@ func (g *Game) Items() []Item {
 	return gameItems
 }
 
-// process advances the game by one step given this frame's input.
-func (g *Game) process(input int) {
-	if input == KeyEscape {
+// Process advances the game by one step given this frame's input.
+func (g *Game) Process(input int) {
+	if input == constants.KeyEscape {
 		g.Running = false
 		return
 	}
@@ -104,9 +107,9 @@ func (g *Game) process(input int) {
 		g.movePaddle(&g.leftPaddle, -int(g.leftPaddle.Speed))
 	case int('s'), int('S'):
 		g.movePaddle(&g.leftPaddle, int(g.leftPaddle.Speed))
-	case KeyUp:
+	case constants.KeyUp:
 		g.movePaddle(&g.rightPaddle, -int(g.rightPaddle.Speed))
-	case KeyDown:
+	case constants.KeyDown:
 		g.movePaddle(&g.rightPaddle, int(g.rightPaddle.Speed))
 	}
 
